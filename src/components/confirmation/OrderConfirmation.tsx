@@ -10,6 +10,7 @@ import {
   Receipt
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { WHATSAPP_DISPLAY } from '../../data/contact';
 import confetti from 'canvas-confetti';
 
 export const OrderConfirmation: React.FC = () => {
@@ -188,7 +189,7 @@ export const OrderConfirmation: React.FC = () => {
           </button>
 
           <p className="text-[11px] text-slate-400">
-            ¿Dudas sobre tu pedido? Escríbenos directamente a nuestro WhatsApp oficial: <strong>709-73792</strong>
+            ¿Dudas sobre tu pedido? Escríbenos directamente a nuestro WhatsApp oficial: <strong>{WHATSAPP_DISPLAY}</strong>
           </p>
         </div>
 

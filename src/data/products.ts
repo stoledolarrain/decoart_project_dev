@@ -71,9 +71,10 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Graduación & Logros',
     price: 210,
     originalPrice: 245,
-    image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1627556704302-624286467c65?auto=format&fit=crop&w=800&q=80',
     gallery: [
-      'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1627556704302-624286467c65?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80',
     ],
     description: 'Bouquet de birrete foil metalizado, estrellas doradas de 18", burbuja transparente cristal con confeti interno y mensaje en vinilo "¡Felicidades Licenciado / Ingeniero!".',
     includesHelium: true,

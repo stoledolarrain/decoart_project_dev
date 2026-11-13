@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Truck, Clock, ShieldCheck, ArrowRight, MessageCircle } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { useParallax } from '../../hooks/useScrollReveal';
 
 export const HeroBanner: React.FC = () => {
   const { setCurrentView } = useCart();
   const [activeSlide, setActiveSlide] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
+
+  // Parallax de las imágenes del banner ligado al scroll
+  useParallax(sliderRef, 'img[data-parallax]');
 
   const banners = [
     {
@@ -33,7 +38,7 @@ export const HeroBanner: React.FC = () => {
   return (
     <div className="relative mb-8">
       {/* Main Banner Slider */}
-      <div className="relative rounded-2xl overflow-hidden shadow-lg border border-pink-100 bg-slate-900 aspect-[21/9] sm:aspect-[24/8] min-h-[220px] sm:min-h-[300px]">
+      <div ref={sliderRef} data-reveal className="relative rounded-2xl overflow-hidden shadow-lg border border-pink-100 bg-slate-900 aspect-[21/9] sm:aspect-[24/8] min-h-[220px] sm:min-h-[300px]">
         {banners.map((b, idx) => (
           <div
             key={idx}
@@ -43,9 +48,10 @@ export const HeroBanner: React.FC = () => {
           >
             {/* Banner Background Image */}
             <img 
+              data-parallax
               src={b.image} 
               alt={b.title} 
-              className="w-full h-full object-cover object-center" 
+              className="w-full h-full object-cover object-center will-change-transform" 
             />
 
             {/* Gradient Overlay for Text Readability */}
@@ -100,7 +106,7 @@ export const HeroBanner: React.FC = () => {
 
       {/* Feature Value Props Bar (Amazon/eBay Style) */}
       <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+        <div data-reveal className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-pink-50 text-deco-pink flex items-center justify-center flex-shrink-0">
             <Truck className="w-5 h-5" />
           </div>
@@ -110,7 +116,7 @@ export const HeroBanner: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+        <div data-reveal className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
             <Clock className="w-5 h-5" />
           </div>
@@ -120,7 +126,7 @@ export const HeroBanner: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+        <div data-reveal className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
             <ShieldCheck className="w-5 h-5" />
           </div>
@@ -130,7 +136,7 @@ export const HeroBanner: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+        <div data-reveal className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-5 h-5" />
           </div>

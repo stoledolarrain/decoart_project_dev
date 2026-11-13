@@ -20,6 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div 
+      data-reveal
       onClick={() => setSelectedProductForModal(product)}
       className="group bg-white rounded-2xl border border-slate-200/90 hover:border-deco-pink/50 hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden cursor-pointer"
     >

@@ -7,6 +7,7 @@ import {
   Clock
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { WHATSAPP_DISPLAY, WHATSAPP_LINK } from '../../data/contact';
 
 export const CustomBouquetPage: React.FC = () => {
   const { setCurrentView } = useCart();
@@ -25,7 +26,7 @@ export const CustomBouquetPage: React.FC = () => {
       `📝 *Detalles de lo que busco:* ${details || 'Tengo fotos de referencia de lo que quiero armar.'}\n\n` +
       `¿Me podrían indicar disponibilidad y coordinar el envío en Santa Cruz? Gracias!`
     );
-    return `https://wa.me/59170973792?text=${text}`;
+    return `${WHATSAPP_LINK}?text=${text}`;
   };
 
   const inspirationCards = [
@@ -239,7 +240,7 @@ export const CustomBouquetPage: React.FC = () => {
 
             <div>
               <h3 className="font-extrabold text-slate-900 text-base">DecoArt Taller Creativo</h3>
-              <p className="text-xs text-emerald-700 font-semibold">Celular Oficial: 709-73792</p>
+              <p className="text-xs text-emerald-700 font-semibold">Celular Oficial: {WHATSAPP_DISPLAY}</p>
               <p className="text-[11px] text-slate-400">Santa Cruz de la Sierra</p>
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/layout/CartDrawer';
@@ -14,14 +14,14 @@ import { CartProvider, useCart } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { PRODUCTS } from './data/products';
 import { SearchX } from 'lucide-react';
+import { useScrollReveal } from './hooks/useScrollReveal';
 
 const MainContent: React.FC = () => {
   const { currentView, selectedProductForModal, setSelectedProductForModal } = useCart();
 
   const [selectedCategory, setSelectedCategory] = useState<string>('todos');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('populares');
-  const [filterExpressOnly, setFilterExpressOnly] = useState<boolean>(false);
+  const catalogRef = useRef<HTMLDivElement>(null);
 
   // Filter & sort logic
   const filteredProducts = useMemo(() => {
@@ -44,25 +44,14 @@ const MainContent: React.FC = () => {
       );
     }
 
-    // Express 3h filter
-    if (filterExpressOnly) {
-      result = result.filter((p) => p.express3h);
-    }
-
-    // Sorting
-    if (sortBy === 'precio-bajo') {
-      result.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'precio-alto') {
-      result.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'valorados') {
-      result.sort((a, b) => b.rating - a.rating);
-    } else {
-      // Populares / Bestsellers first
-      result.sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0));
-    }
+    // Orden: los más vendidos primero
+    result.sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0));
 
     return result;
-  }, [selectedCategory, searchQuery, filterExpressOnly, sortBy]);
+  }, [selectedCategory, searchQuery]);
+
+  // Animación de aparición al hacer scroll (GSAP + ScrollTrigger); se rehace al filtrar
+  useScrollReveal(catalogRef, [currentView, filteredProducts]);
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
@@ -76,20 +65,17 @@ const MainContent: React.FC = () => {
       {/* Main View Router */}
       <main className="flex-1">
         {currentView === 'catalog' && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          <div ref={catalogRef} className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
             {/* Hero Banners */}
             <HeroBanner />
 
-            {/* Category Filter Pills and Sort Bar */}
+            {/* Botones de filtro por categoría */}
+            <div data-reveal>
             <CategoryFilters
               selectedCategory={selectedCategory}
               onSelectCategory={setSelectedCategory}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-              filterExpressOnly={filterExpressOnly}
-              onToggleExpress={() => setFilterExpressOnly(!filterExpressOnly)}
-              totalResults={filteredProducts.length}
             />
+            </div>
 
             {/* Product Grid */}
             {filteredProducts.length === 0 ? (
@@ -107,7 +93,6 @@ const MainContent: React.FC = () => {
                   onClick={() => {
                     setSearchQuery('');
                     setSelectedCategory('todos');
-                    setFilterExpressOnly(false);
                   }}
                   className="bg-deco-pink text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-deco-pink-600 transition-colors"
                 >

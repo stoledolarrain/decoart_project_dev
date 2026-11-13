@@ -33,6 +33,22 @@ export default {
             light: '#D1FAE5',
             dark: '#059669',
           },
+          // Colores del confeti del logo
+          yellow: {
+            DEFAULT: '#F5E11B',
+            light: '#FEFBD6',
+            dark: '#D4C20A',
+          },
+          lime: {
+            DEFAULT: '#8DC63F',
+            light: '#EEF7E0',
+            dark: '#6FA428',
+          },
+          sky: {
+            DEFAULT: '#1EAAF1',
+            light: '#E3F4FD',
+            dark: '#1686C2',
+          },
           dark: '#1E293B',
         }
       },
