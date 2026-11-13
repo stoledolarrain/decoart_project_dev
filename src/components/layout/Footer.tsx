@@ -76,7 +76,7 @@ export const Footer: React.FC = () => {
                   }}
                   className="text-pink-400 hover:text-pink-300 font-semibold flex items-center gap-1"
                 >
-                  • Bouquet Personalizado (Vía WhatsApp) 📲
+                  • Bouquet Personalizado (Vía WhatsApp)
                 </button>
               </li>
               <li>

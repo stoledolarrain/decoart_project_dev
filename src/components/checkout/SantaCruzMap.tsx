@@ -1,11 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createRoot } from 'react-dom/client';
 import L from 'leaflet';
-import { Navigation } from 'lucide-react';
-import { 
-  TALLER_LOCATION, 
-  calculateSantaCruzRing, 
-  PRESET_ZONES 
+import { Navigation, Store, MapPin } from 'lucide-react';
+import {
+  TALLER_LOCATION,
+  calculateSantaCruzRing,
+  PRESET_ZONES
 } from '../../data/zones';
+
+// Leaflet divIcons take plain HTML, not React: mount the lucide icon into a styled element.
+const markerIconElement = (style: string, icon: React.ReactNode) => {
+  const el = document.createElement('div');
+  el.setAttribute('style', style);
+  createRoot(el).render(icon);
+  return el;
+};
 
 interface SantaCruzMapProps {
   currentLat: number;
@@ -74,7 +83,7 @@ export const SantaCruzMap: React.FC<SantaCruzMapProps> = ({
         fillColor: '#10B981',
         fillOpacity: 0.08,
         weight: 3,
-      }).addTo(map).bindTooltip('📍 Límite 4to Anillo: Tarifa Plana Baja (15 Bs)', { permanent: false, direction: 'top' });
+      }).addTo(map).bindTooltip('Límite 4to Anillo: Tarifa Plana Baja (15 Bs)', { permanent: false, direction: 'top' });
 
       // Draw 2do Anillo
       L.circle(centerCoords, {
@@ -87,11 +96,10 @@ export const SantaCruzMap: React.FC<SantaCruzMapProps> = ({
       // Add Taller DecoArt marker at Equipetrol
       const tallerIcon = L.divIcon({
         className: 'custom-taller-icon',
-        html: `
-          <div style="background-color: #FF2A85; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-size: 16px;">
-            🎈
-          </div>
-        `,
+        html: markerIconElement(
+          'background-color: #FF2A85; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-size: 16px;',
+          <Store size={16} />
+        ),
         iconSize: [34, 34],
         iconAnchor: [17, 17],
       });
@@ -100,7 +108,7 @@ export const SantaCruzMap: React.FC<SantaCruzMapProps> = ({
         .addTo(map)
         .bindPopup(`
           <div style="font-family: sans-serif; font-size: 12px;">
-            <strong style="color: #FF2A85;">🎈 Taller Central DecoArt</strong><br/>
+            <strong style="color: #FF2A85;">Taller Central DecoArt</strong><br/>
             ${TALLER_LOCATION.address}<br/>
             <span style="color: #059669; font-weight: bold;">Punto de recojo gratuito (0 Bs)</span>
           </div>
@@ -109,11 +117,10 @@ export const SantaCruzMap: React.FC<SantaCruzMapProps> = ({
       // Delivery Destination Marker (Draggable)
       const deliveryIcon = L.divIcon({
         className: 'custom-delivery-pin',
-        html: `
-          <div style="background-color: #0F172A; color: #FACC15; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 6px 15px rgba(0,0,0,0.4); font-size: 18px; transform: translateY(-8px);">
-            📍
-          </div>
-        `,
+        html: markerIconElement(
+          'background-color: #0F172A; color: #FACC15; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 6px 15px rgba(0,0,0,0.4); font-size: 18px; transform: translateY(-8px);',
+          <MapPin size={18} />
+        ),
         iconSize: [36, 36],
         iconAnchor: [18, 28],
       });
@@ -234,7 +241,7 @@ export const SantaCruzMap: React.FC<SantaCruzMapProps> = ({
             <span className="w-3 h-3 rounded-full bg-blue-500 inline-block border border-white"></span>
             <span>Zona Azul/Morada: 5to al 8vo Anillo = 22 a 45 Bs</span>
           </div>
-          <div className="text-slate-400 italic">Haz clic en el mapa o arrastra el marcador 📍</div>
+          <div className="text-slate-400 italic">Haz clic en el mapa o arrastra el marcador <MapPin className="inline w-3 h-3" /></div>
         </div>
       </div>
     </div>
