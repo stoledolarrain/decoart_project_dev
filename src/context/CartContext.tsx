@@ -22,7 +22,9 @@ interface CartContextType {
   lastOrder: Order | null;
   setLastOrder: (order: Order | null) => void;
   selectedProductForModal: Product | null;
-  setSelectedProductForModal: (product: Product | null) => void;
+  /** Abre el modal de un producto; `paletteName` preselecciona ese color. */
+  setSelectedProductForModal: (product: Product | null, paletteName?: string) => void;
+  modalPaletteName: string | undefined;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -45,7 +47,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [discountPercent, setDiscountPercent] = useState<number>(0);
   const [currentView, setCurrentView] = useState<'catalog' | 'checkout' | 'custom-bouquet' | 'confirmation'>('catalog');
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
-  const [selectedProductForModal, setSelectedProductForModal] = useState<Product | null>(null);
+  const [selectedProductForModal, setSelectedProduct] = useState<Product | null>(null);
+  const [modalPaletteName, setModalPaletteName] = useState<string | undefined>(undefined);
+
+  const setSelectedProductForModal = (product: Product | null, paletteName?: string) => {
+    setSelectedProduct(product);
+    setModalPaletteName(paletteName);
+  };
 
   useEffect(() => {
     localStorage.setItem('decoart_cart', JSON.stringify(items));
@@ -157,6 +165,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLastOrder,
         selectedProductForModal,
         setSelectedProductForModal,
+        modalPaletteName,
       }}
     >
       {children}

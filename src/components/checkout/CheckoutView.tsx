@@ -13,6 +13,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useCart } from "../../context/CartContext";
+import { getPaletteImage } from "../../utils/productImage";
 import { useAuth } from "../../context/AuthContext";
 import { SantaCruzMap } from "./SantaCruzMap";
 import { TALLER_LOCATION } from "../../data/zones";
@@ -524,7 +525,7 @@ export const CheckoutView: React.FC = () => {
                     className="flex gap-2.5 text-xs py-1 border-b border-slate-50 last:border-none"
                   >
                     <img
-                      src={item.product.image}
+                      src={getPaletteImage(item.product, item.customization.selectedPalette)}
                       alt={item.product.name}
                       className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
                     />

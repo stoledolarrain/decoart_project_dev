@@ -1,3 +1,11 @@
+/** Paleta de colores de un producto. Si tiene `image`, al elegirla se muestra esa foto. */
+export interface ColorPalette {
+  id: string;
+  name: string;
+  hex: string[];
+  image?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -20,7 +28,7 @@ export interface Product {
   options: {
     allowsNumberFoil: boolean;
     defaultNumbers?: string;
-    colorPalettes: { id: string; name: string; hex: string[] }[];
+    colorPalettes: ColorPalette[];
   };
 }
 

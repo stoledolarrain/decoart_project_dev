@@ -1,41 +1,86 @@
-import React, { useState } from 'react';
-import { 
-  X, 
-  Star, 
-  ShoppingBag, 
-  ArrowRight, 
-  Clock, 
-  Truck, 
+import React, { useState } from "react";
+import {
+  X,
+  Star,
+  ShoppingBag,
+  ArrowRight,
+  Clock,
+  Truck,
   Sparkles,
   Check,
-  ShieldCheck
-} from 'lucide-react';
-import type { Product } from '../../types';
-import { useCart } from '../../context/CartContext';
+  ShieldCheck,
+} from "lucide-react";
+import type { Product } from "../../types";
+import { useCart } from "../../context/CartContext";
 
 interface ProductDetailModalProps {
   product: Product | null;
+  /** Color con el que se abre el modal (el elegido en la tarjeta del catálogo). */
+  initialPalette?: string;
   onClose: () => void;
 }
 
-export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product, onClose }) => {
-  const { addToCart, setCurrentView } = useCart();
-
+export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
+  product,
+  initialPalette,
+  onClose,
+}) => {
   if (!product) return null;
+  // La `key` reinicia el estado interno cada vez que se abre otro producto o color.
+  return (
+    <ProductDetailContent
+      key={`${product.id}-${initialPalette ?? ""}`}
+      product={product}
+      initialPalette={initialPalette}
+      onClose={onClose}
+    />
+  );
+};
 
-  const [selectedImage, setSelectedImage] = useState(product.image);
-  const [selectedNumber, setSelectedNumber] = useState(product.options.defaultNumbers || '18');
-  const [customNumberInput, setCustomNumberInput] = useState('');
-  const [selectedPalette, setSelectedPalette] = useState(product.options.colorPalettes[0]?.name || '');
-  const [cardMessage, setCardMessage] = useState('');
-  const [recipientName, setRecipientName] = useState('');
+const ProductDetailContent: React.FC<{
+  product: Product;
+  initialPalette?: string;
+  onClose: () => void;
+}> = ({ product, initialPalette, onClose }) => {
+  const { addToCart, setCurrentView } = useCart();
+  const palettes = product.options.colorPalettes;
+  const startPalette =
+    palettes.find((p) => p.name === initialPalette) ?? palettes[0];
+
+  const [selectedImage, setSelectedImage] = useState(
+    startPalette?.image ?? product.image,
+  );
+  const [selectedNumber, setSelectedNumber] = useState(
+    product.options.defaultNumbers || "18",
+  );
+  const [customNumberInput, setCustomNumberInput] = useState("");
+  const [selectedPalette, setSelectedPalette] = useState(
+    startPalette?.name || "",
+  );
+  const [cardMessage, setCardMessage] = useState("");
+  const [recipientName, setRecipientName] = useState("");
   const [quantity, setQuantity] = useState(1);
 
   const effectiveNumber = customNumberInput.trim() || selectedNumber;
 
+  // Elegir un color cambia la foto; elegir una miniatura selecciona su color.
+  const pickPalette = (name: string) => {
+    setSelectedPalette(name);
+    const img = palettes.find((p) => p.name === name)?.image;
+    if (img) setSelectedImage(img);
+  };
+
+  const pickImage = (img: string) => {
+    setSelectedImage(img);
+    const pal = palettes.find((p) => p.image === img);
+    if (pal) setSelectedPalette(pal.name);
+  };
+
   const handleAddToCart = () => {
     addToCart(product, quantity, {
-      selectedNumber: product.options.allowsNumberFoil ? effectiveNumber : undefined,
+      selectedNumber: product.options.allowsNumberFoil
+        ? effectiveNumber
+        : undefined,
       selectedPalette,
       cardMessage,
       recipientName,
@@ -45,27 +90,28 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
 
   const handleBuyNow = () => {
     addToCart(product, quantity, {
-      selectedNumber: product.options.allowsNumberFoil ? effectiveNumber : undefined,
+      selectedNumber: product.options.allowsNumberFoil
+        ? effectiveNumber
+        : undefined,
       selectedPalette,
       cardMessage,
       recipientName,
     });
     onClose();
-    setCurrentView('checkout');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setCurrentView("checkout");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
       {/* Backdrop */}
-      <div 
+      <div
         onClick={onClose}
         className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity"
       />
 
       {/* Modal Container */}
       <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden z-10 border border-slate-100 my-8 animate-in fade-in zoom-in-95 duration-200">
-        
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -75,14 +121,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2">
-          
           {/* Left Column: Visual Gallery */}
           <div className="bg-slate-100 p-6 flex flex-col justify-between">
             <div className="aspect-square rounded-2xl overflow-hidden bg-white shadow-inner mb-4">
               <img
+                key={selectedImage}
                 src={selectedImage}
-                alt={product.name}
-                className="w-full h-full object-cover"
+                alt={`${product.name} - ${selectedPalette}`}
+                className="w-full h-full object-cover animate-fade-in"
               />
             </div>
 
@@ -92,12 +138,19 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                 {product.gallery.map((img, idx) => (
                   <button
                     key={idx}
-                    onClick={() => setSelectedImage(img)}
+                    onClick={() => pickImage(img)}
+                    title={palettes.find((p) => p.image === img)?.name}
                     className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all ${
-                      selectedImage === img ? 'border-deco-pink scale-105 shadow-md' : 'border-slate-300 opacity-70 hover:opacity-100'
+                      selectedImage === img
+                        ? "border-deco-pink scale-105 shadow-md"
+                        : "border-slate-300 opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
+                    <img
+                      src={img}
+                      alt="Thumbnail"
+                      className="w-full h-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
@@ -106,15 +159,21 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
             {/* Guarantees Box */}
             <div className="bg-white/90 p-4 rounded-xl border border-slate-200 text-xs space-y-2 text-slate-700">
               <div className="font-extrabold text-slate-900 flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-deco-pink" /> Garantía de Calidad DecoArt:
+                <Sparkles className="w-4 h-4 text-deco-pink" /> Garantía de
+                Calidad DecoArt:
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-3.5 h-3.5 text-amber-500" />
-                <span>Vida útil: <strong>{product.lifespanHours} horas</strong> flotación garantizada.</span>
+                <span>
+                  Vida útil: <strong>{product.lifespanHours} horas</strong>{" "}
+                  flotación garantizada.
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Truck className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Despacho seguro en auto acondicionado en Santa Cruz.</span>
+                <span>
+                  Despacho seguro en auto acondicionado en Santa Cruz.
+                </span>
               </div>
             </div>
           </div>
@@ -130,7 +189,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                 <div className="flex items-center gap-1 text-amber-500 font-bold">
                   <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                   <span>{product.rating}</span>
-                  <span className="text-slate-400 font-normal">({product.reviewCount} opiniones)</span>
+                  <span className="text-slate-400 font-normal">
+                    ({product.reviewCount} opiniones)
+                  </span>
                 </div>
               </div>
 
@@ -157,67 +218,23 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                 {product.description}
               </p>
 
-              {/* Customization 1: Numbers (if allowsNumberFoil) */}
-              {product.options.allowsNumberFoil && (
-                <div className="mb-5 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
-                  <label className="block text-xs font-extrabold text-slate-800 mb-2 flex items-center justify-between">
-                    <span>1. Elige el Número Foil Gigante (34"):</span>
-                    <span className="text-deco-pink text-[11px] font-bold">Seleccionado: #{effectiveNumber}</span>
-                  </label>
-                  
-                  {/* Preset number pills */}
-                  <div className="flex flex-wrap gap-2 mb-2.5">
-                    {['18', '20', '25', '30', '40', '50'].map((num) => (
-                      <button
-                        key={num}
-                        type="button"
-                        onClick={() => {
-                          setSelectedNumber(num);
-                          setCustomNumberInput('');
-                        }}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                          selectedNumber === num && !customNumberInput
-                            ? 'bg-slate-900 text-white shadow'
-                            : 'bg-white border border-slate-300 text-slate-700 hover:border-deco-pink'
-                        }`}
-                      >
-                        {num}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Custom Number Input */}
-                  <div className="flex items-center gap-2 text-xs">
-                    <span className="text-slate-500 font-medium">O escribe otro número:</span>
-                    <input
-                      type="text"
-                      maxLength={3}
-                      placeholder="Ej. 15 o 60"
-                      value={customNumberInput}
-                      onChange={(e) => setCustomNumberInput(e.target.value)}
-                      className="w-24 px-3 py-1.5 border border-slate-300 rounded-lg text-center font-bold outline-none focus:border-deco-pink bg-white"
-                    />
-                  </div>
-                </div>
-              )}
-
               {/* Customization 2: Color Palette */}
               <div className="mb-5 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
                 <label className="block text-xs font-extrabold text-slate-800 mb-2">
-                  2. Paleta de Colores de los Globos:
+                  2. Elige el Color (la foto cambia al seleccionarlo):
                 </label>
                 <div className="space-y-2">
-                  {product.options.colorPalettes.map((palette) => {
+                  {palettes.map((palette) => {
                     const isSelected = selectedPalette === palette.name;
                     return (
                       <button
                         key={palette.id}
                         type="button"
-                        onClick={() => setSelectedPalette(palette.name)}
+                        onClick={() => pickPalette(palette.name)}
                         className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-xs font-bold transition-all ${
                           isSelected
-                            ? 'border-deco-pink bg-pink-50/70 text-deco-pink shadow-sm'
-                            : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                            ? "border-deco-pink bg-pink-50/70 text-deco-pink shadow-sm"
+                            : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
@@ -232,7 +249,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                           </div>
                           <span>{palette.name}</span>
                         </div>
-                        {isSelected && <Check className="w-4 h-4 text-deco-pink" />}
+                        {isSelected && (
+                          <Check className="w-4 h-4 text-deco-pink" />
+                        )}
                       </button>
                     );
                   })}
@@ -245,7 +264,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                   3. Tarjeta con Dedicatoria Impresa (Gratis):
                 </label>
                 <p className="text-[11px] text-slate-500 mb-2">
-                  Se imprimirá en tarjeta caligráfica colocada en el centro del bouquet.
+                  Se imprimirá en tarjeta caligráfica colocada en el centro del
+                  bouquet.
                 </p>
                 <div className="space-y-2">
                   <input
@@ -273,7 +293,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
             {/* Bottom Actions: Quantity and Checkout Buttons */}
             <div className="pt-4 border-t border-slate-200 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-700">Cantidad:</span>
+                <span className="text-xs font-bold text-slate-700">
+                  Cantidad:
+                </span>
                 <div className="flex items-center border border-slate-300 rounded-xl overflow-hidden bg-slate-50">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -313,10 +335,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
 
               <div className="text-center text-[10px] text-slate-400 flex items-center justify-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Pago con QR Simple • Envíos en Santa Cruz de la Sierra</span>
+                <span>
+                  Pago con QR Simple • Envíos en Santa Cruz de la Sierra
+                </span>
               </div>
             </div>
-
           </div>
         </div>
       </div>

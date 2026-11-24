@@ -52,6 +52,16 @@ export default {
           dark: '#1E293B',
         }
       },
+      keyframes: {
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+      },
+      animation: {
+        // Fundido al cambiar la foto según el color elegido
+        'fade-in': 'fade-in 0.35s ease-out',
+      },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       }

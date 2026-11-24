@@ -12,6 +12,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { getPaletteImage } from '../../utils/productImage';
 
 export const CartDrawer: React.FC = () => {
   const { 
@@ -111,7 +112,7 @@ export const CartDrawer: React.FC = () => {
                       className="border border-slate-200 rounded-xl p-3 flex gap-3 hover:border-pink-200 transition-colors bg-white shadow-sm"
                     >
                       <img 
-                        src={item.product.image} 
+                        src={getPaletteImage(item.product, item.customization.selectedPalette)} 
                         alt={item.product.name} 
                         className="w-20 h-20 rounded-lg object-cover flex-shrink-0 border border-slate-100"
                       />

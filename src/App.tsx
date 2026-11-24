@@ -17,7 +17,7 @@ import { SearchX } from 'lucide-react';
 import { useScrollReveal } from './hooks/useScrollReveal';
 
 const MainContent: React.FC = () => {
-  const { currentView, selectedProductForModal, setSelectedProductForModal } = useCart();
+  const { currentView, selectedProductForModal, setSelectedProductForModal, modalPaletteName } = useCart();
 
   const [selectedCategory, setSelectedCategory] = useState<string>('todos');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -122,6 +122,7 @@ const MainContent: React.FC = () => {
       <AuthModal />
       <ProductDetailModal
         product={selectedProductForModal}
+        initialPalette={modalPaletteName}
         onClose={() => setSelectedProductForModal(null)}
       />
     </div>

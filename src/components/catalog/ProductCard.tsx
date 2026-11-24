@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Star, Zap, ShoppingBag, Eye, Sparkles } from 'lucide-react';
 import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext';
@@ -9,29 +9,58 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart, setSelectedProductForModal } = useCart();
+  const palettes = product.options.colorPalettes;
+  const [activePaletteId, setActivePaletteId] = useState(palettes[0]?.id);
+  const activePalette = palettes.find((p) => p.id === activePaletteId) ?? palettes[0];
+
+  // Fotos a mostrar: una por paleta (si las tiene); si no, la imagen principal del producto.
+  const paletteImages = palettes.filter((p) => p.image);
+  const hasPaletteImages = paletteImages.length > 0;
+  const activeImage = activePalette?.image ?? product.image;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
     addToCart(product, 1, {
       selectedNumber: product.options.allowsNumberFoil ? product.options.defaultNumbers || '18' : undefined,
-      selectedPalette: product.options.colorPalettes[0]?.name,
+      selectedPalette: activePalette?.name,
     });
   };
 
+  const handlePickPalette = (e: React.MouseEvent, paletteId: string) => {
+    e.stopPropagation();
+    setActivePaletteId(paletteId);
+  };
+
   return (
-    <div 
+    <div
       data-reveal
-      onClick={() => setSelectedProductForModal(product)}
+      onClick={() => setSelectedProductForModal(product, activePalette?.name)}
       className="group bg-white rounded-2xl border border-slate-200/90 hover:border-deco-pink/50 hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden cursor-pointer"
     >
-      {/* Product Image Area */}
+      {/* Imagen del producto: cambia con un fundido según el color elegido */}
       <div className="relative aspect-square overflow-hidden bg-slate-100">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-        />
+        <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-500">
+          {hasPaletteImages ? (
+            paletteImages.map((pal, idx) => (
+              <img
+                key={pal.id}
+                src={pal.image}
+                alt={`${product.name} - ${pal.name}`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                  pal.image === activeImage ? 'opacity-100' : 'opacity-0'
+                }`}
+                loading={idx === 0 ? 'eager' : 'lazy'}
+              />
+            ))
+          ) : (
+            <img
+              src={product.image}
+              alt={product.name}
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+          )}
+        </div>
 
         {/* Badges Overlay */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10">
@@ -60,7 +89,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </div>
 
-      {/* Product Details (Amazon/eBay style) */}
+      {/* Product Details */}
       <div className="p-4 flex-1 flex flex-col justify-between">
         <div>
           {/* Category & Ratings */}
@@ -80,28 +109,47 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.name}
           </h3>
 
-          {/* Palette Color Dots Preview */}
-          <div className="flex items-center gap-1 mb-3">
-            <span className="text-[10px] text-slate-400 font-medium mr-1">Paletas:</span>
-            {product.options.colorPalettes.slice(0, 3).map((pal) => (
-              <div 
-                key={pal.id} 
-                className="flex -space-x-1 border border-slate-200 rounded-full p-0.5 bg-slate-50"
-                title={pal.name}
-              >
-                {pal.hex.map((color, cIdx) => (
-                  <span
-                    key={cIdx}
-                    className="w-2.5 h-2.5 rounded-full border border-white"
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
+          {/* Selector de colores: cada círculo muestra la paleta y cambia la foto */}
+          <div className="mb-3">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[10px] text-slate-400 font-medium mr-0.5">Colores:</span>
+              {palettes.map((pal) => {
+                const isActive = pal.id === activePalette?.id;
+                const n = pal.hex.length;
+                const gradient = `conic-gradient(${pal.hex
+                  .map((c, i) => `${c} ${(i / n) * 360}deg ${((i + 1) / n) * 360}deg`)
+                  .join(', ')})`;
+                return (
+                  <button
+                    key={pal.id}
+                    type="button"
+                    onClick={(e) => handlePickPalette(e, pal.id)}
+                    title={pal.name}
+                    aria-label={`Ver en ${pal.name}`}
+                    aria-pressed={isActive}
+                    className={`w-6 h-6 rounded-full p-0.5 transition-all ${
+                      isActive
+                        ? 'ring-2 ring-deco-pink ring-offset-1 scale-110'
+                        : 'ring-1 ring-slate-200 hover:ring-deco-pink/60 hover:scale-105'
+                    }`}
+                  >
+                    <span
+                      className="block w-full h-full rounded-full border border-white"
+                      style={{ background: gradient }}
+                    />
+                  </button>
+                );
+              })}
+              {product.options.allowsNumberFoil && (
+                <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200 ml-1">
+                  # Números
+                </span>
+              )}
+            </div>
+            {activePalette && (
+              <div className="text-[11px] text-slate-500 font-semibold mt-1 truncate">
+                {activePalette.name}
               </div>
-            ))}
-            {product.options.allowsNumberFoil && (
-              <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-1.5 py-0.2 rounded border border-purple-200 ml-1">
-                # Números
-              </span>
             )}
           </div>
         </div>
@@ -124,7 +172,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
           </div>
 
-          {/* Quick Add Button */}
+          {/* Quick Add Button: agrega con el color elegido */}
           <button
             onClick={handleQuickAdd}
             className="bg-slate-900 hover:bg-deco-pink text-white text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-sm active:scale-95 flex items-center gap-1.5 flex-shrink-0"
