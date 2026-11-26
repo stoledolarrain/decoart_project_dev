@@ -108,9 +108,11 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Mini Bouquets',
     price: 130,
     originalPrice: 155,
-    image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
+    image: '/resources/catalog/mini-infantil/mini-infantil1.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
+      '/resources/catalog/mini-infantil/mini-infantil1.jpg',
+      '/resources/catalog/mini-infantil/mini-infantil2.jpg',
+      '/resources/catalog/mini-infantil/mini-infantil3.jpg',
     ],
     description: 'Versión compacta y tierna ideal para mesas o entregas sorpresa en colegios u oficinas. Incluye figura temática foil (estrella o corona), globos macarrón y base sólida de apoyo.',
     includesHelium: false, // aire con estructura
@@ -125,8 +127,9 @@ export const PRODUCTS: Product[] = [
       allowsNumberFoil: true,
       defaultNumbers: '7',
       colorPalettes: [
-        { id: 'pastel-mix', name: 'Pastel Unicornio', hex: ['#F472B6', '#38BDF8', '#FDE047', '#A78BFA'] },
-        { id: 'safari', name: 'Verde Menta & Selva', hex: ['#10B981', '#34D399', '#FBBF24'] },
+        { id: 'pastel-mix', name: 'Pastel Unicornio', hex: ['#F472B6', '#38BDF8', '#FDE047', '#A78BFA'], image: '/resources/catalog/mini-infantil/mini-infantil1.jpg' },
+        { id: 'safari', name: 'Verde Menta & Selva', hex: ['#10B981', '#34D399', '#FBBF24'], image: '/resources/catalog/mini-infantil/mini-infantil2.jpg' },
+        { id: 'dulce-cielo', name: 'Celeste & Amarillo Sol', hex: ['#38BDF8', '#FDE047', '#FFFFFF'], image: '/resources/catalog/mini-infantil/mini-infantil3.jpg' },
       ]
     }
   },
@@ -137,11 +140,13 @@ export const PRODUCTS: Product[] = [
     category: 'bebe',
     categoryLabel: 'Baby Shower & Bebés',
     price: 240,
-    image: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80',
+    image: '/resources/catalog/baby/baby1.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80',
+      '/resources/catalog/baby/baby1.jpg',
+      '/resources/catalog/baby/baby2.jpg',
+      '/resources/catalog/baby/baby3.jpg',
     ],
-    description: 'Maxi globo negro opaco de 36" inflado con helio y relleno de confeti azul o rosa para el momento de la revelación, acompañado de bouquet de apoyo en tonos celestes y rosas pastel.',
+    description: 'Maxi globo negro opaco de 36" inflado con helio y relleno de confeti azul o rosa para el momento de la revelación, acompañado de bouquet de apoyo en tonos pastel a elección.',
     includesHelium: true,
     lifespanHours: 24,
     heightCm: 170,
@@ -152,7 +157,9 @@ export const PRODUCTS: Product[] = [
     options: {
       allowsNumberFoil: false,
       colorPalettes: [
-        { id: 'reveal-classic', name: 'Celeste Baby & Rosa Chicle', hex: ['#38BDF8', '#F472B6', '#FFFFFF'] },
+        { id: 'reveal-classic', name: 'Celeste Baby & Rosa Chicle', hex: ['#38BDF8', '#F472B6', '#FFFFFF'], image: '/resources/catalog/baby/baby1.jpg' },
+        { id: 'reveal-pastel-oro', name: 'Crema Pastel & Dorado', hex: ['#F5E6D3', '#D4AF37', '#F9C5D1'], image: '/resources/catalog/baby/baby2.jpg' },
+        { id: 'reveal-lila-menta', name: 'Lavanda & Menta Suave', hex: ['#C084FC', '#6EE7B7', '#FFFFFF'], image: '/resources/catalog/baby/baby3.jpg' },
       ]
     }
   },
@@ -164,9 +171,11 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Corporativo & Marcas',
     price: 280,
     originalPrice: 320,
-    image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80',
+    image: '/resources/catalog/corporate/corporate1.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80',
+      '/resources/catalog/corporate/corporate1.jpg',
+      '/resources/catalog/corporate/corporate2.jpg',
+      '/resources/catalog/corporate/corporate3.jpg',
     ],
     description: 'Estructura imponente de 1.80m con orbes cromados reflectantes, estrellas gigantes de 24" y rotulación personalizada en vinilo premium con el logotipo de la empresa o nombre del agasajado.',
     includesHelium: true,
@@ -180,9 +189,9 @@ export const PRODUCTS: Product[] = [
       allowsNumberFoil: true,
       defaultNumbers: '10',
       colorPalettes: [
-        { id: 'plata-azul-corp', name: 'Azul Real & Plata Espejo', hex: ['#1D4ED8', '#94A3B8', '#FFFFFF'] },
-        { id: 'oro-negro-corp', name: 'Oro Champán & Negro Mate', hex: ['#F59E0B', '#0F172A', '#E2E8F0'] },
-        { id: 'magenta-deco', name: 'Magenta & Turquesa Vibrante', hex: ['#FF2A85', '#06B6D4', '#FBBF24'] },
+        { id: 'plata-azul-corp', name: 'Azul Real & Plata Espejo', hex: ['#1D4ED8', '#94A3B8', '#FFFFFF'], image: '/resources/catalog/corporate/corporate1.jpg' },
+        { id: 'oro-negro-corp', name: 'Oro Champán & Negro Mate', hex: ['#F59E0B', '#0F172A', '#E2E8F0'], image: '/resources/catalog/corporate/corporate2.jpg' },
+        { id: 'magenta-deco', name: 'Magenta & Turquesa Vibrante', hex: ['#FF2A85', '#06B6D4', '#FBBF24'], image: '/resources/catalog/corporate/corporate3.jpg' },
       ]
     }
   },
@@ -226,9 +235,11 @@ export const PRODUCTS: Product[] = [
     category: 'mini',
     categoryLabel: 'Mini Bouquets',
     price: 110,
-    image: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=800&q=80',
+    image: '/resources/catalog/mini-sorpresa/mini-sorpresa1.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=800&q=80',
+      '/resources/catalog/mini-sorpresa/mini-sorpresa1.jpg',
+      '/resources/catalog/mini-sorpresa/mini-sorpresa2.jpg',
+      '/resources/catalog/mini-sorpresa/mini-sorpresa3.jpg',
     ],
     description: 'El detalle perfecto para no llegar con las manos vacías o felicitar a un compañero de oficina. Compacto, transportable en cualquier vehículo y montado sobre base pesada antifugas.',
     includesHelium: false,
@@ -241,8 +252,9 @@ export const PRODUCTS: Product[] = [
     options: {
       allowsNumberFoil: false,
       colorPalettes: [
-        { id: 'fiesta-alegre', name: 'Multicolor Festivo', hex: ['#FF2A85', '#F59E0B', '#0EA5E9', '#10B981'] },
-        { id: 'dorado-blanco', name: 'Blanco & Oro Glam', hex: ['#F59E0B', '#FFFFFF', '#E2E8F0'] },
+        { id: 'fiesta-alegre', name: 'Multicolor Festivo', hex: ['#FF2A85', '#F59E0B', '#0EA5E9', '#10B981'], image: '/resources/catalog/mini-sorpresa/mini-sorpresa1.jpg' },
+        { id: 'dorado-blanco', name: 'Blanco & Oro Glam', hex: ['#F59E0B', '#FFFFFF', '#E2E8F0'], image: '/resources/catalog/mini-sorpresa/mini-sorpresa2.jpg' },
+        { id: 'rosa-perlado', name: 'Rosa Perlado & Fucsia', hex: ['#F472B6', '#DB2777', '#FCE7F3'], image: '/resources/catalog/mini-sorpresa/mini-sorpresa3.jpg' },
       ]
     }
   }
