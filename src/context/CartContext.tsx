@@ -64,8 +64,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     quantity: number = 1,
     customization: CustomizationSelection = {}
   ) => {
+    const matchedPalette =
+      (customization.selectedPaletteId
+        ? product.options.colorPalettes.find((p) => p.id === customization.selectedPaletteId)
+        : undefined) ??
+      (customization.selectedPalette
+        ? product.options.colorPalettes.find((p) => p.name === customization.selectedPalette)
+        : undefined) ??
+      product.options.colorPalettes[0];
+
+    const paletteKey = matchedPalette?.id || customization.selectedPalette || 'none';
     // Generate a unique item ID based on product and customization selections
-    const customHash = `${product.id}_${customization.selectedNumber || 'none'}_${customization.selectedPalette || 'none'}_${customization.cardMessage ? 'msg' : 'nomsg'}`;
+    const customHash = `${product.id}_${customization.selectedNumber || 'none'}_${paletteKey}_${customization.cardMessage ? 'msg' : 'nomsg'}`;
 
     setItems((prevItems) => {
       const existingIndex = prevItems.findIndex((item) => item.id === customHash);
@@ -82,7 +92,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             quantity,
             customization: {
               selectedNumber: customization.selectedNumber || (product.options.allowsNumberFoil ? product.options.defaultNumbers || '18' : undefined),
-              selectedPalette: customization.selectedPalette || product.options.colorPalettes[0]?.name || 'Original',
+              selectedPalette: customization.selectedPalette || matchedPalette?.name || 'Original',
+              selectedPaletteId: customization.selectedPaletteId || matchedPalette?.id,
               cardMessage: customization.cardMessage || '',
               recipientName: customization.recipientName || '',
             },

@@ -62,6 +62,10 @@ const ProductDetailContent: React.FC<{
   const [quantity, setQuantity] = useState(1);
 
   const effectiveNumber = customNumberInput.trim() || selectedNumber;
+  const hasPaletteImages = palettes.some((p) => p.image);
+  const selectedPaletteObj = palettes.find((p) => p.name === selectedPalette);
+  const colorStepNumber = product.options.allowsNumberFoil ? 2 : 1;
+  const cardStepNumber = product.options.allowsNumberFoil ? 3 : 2;
 
   // Elegir un color cambia la foto; elegir una miniatura selecciona su color.
   const pickPalette = (name: string) => {
@@ -82,6 +86,7 @@ const ProductDetailContent: React.FC<{
         ? effectiveNumber
         : undefined,
       selectedPalette,
+      selectedPaletteId: selectedPaletteObj?.id,
       cardMessage,
       recipientName,
     });
@@ -94,6 +99,7 @@ const ProductDetailContent: React.FC<{
         ? effectiveNumber
         : undefined,
       selectedPalette,
+      selectedPaletteId: selectedPaletteObj?.id,
       cardMessage,
       recipientName,
     });
@@ -218,10 +224,59 @@ const ProductDetailContent: React.FC<{
                 {product.description}
               </p>
 
+              {/* Customization 1: Numbers (if allowsNumberFoil) */}
+              {product.options.allowsNumberFoil && (
+                <div className="mb-5 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
+                  <label className="text-xs font-extrabold text-slate-800 mb-2 flex items-center justify-between">
+                    <span>1. Elige el Número Foil Gigante (34"):</span>
+                    <span className="text-deco-pink text-[11px] font-bold">
+                      Seleccionado: #{effectiveNumber}
+                    </span>
+                  </label>
+
+                  {/* Preset number pills */}
+                  <div className="flex flex-wrap gap-2 mb-2.5">
+                    {["15", "18", "20", "25", "30", "40", "50"].map((num) => (
+                      <button
+                        key={num}
+                        type="button"
+                        onClick={() => {
+                          setSelectedNumber(num);
+                          setCustomNumberInput("");
+                        }}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                          selectedNumber === num && !customNumberInput
+                            ? "bg-slate-900 text-white shadow"
+                            : "bg-white border border-slate-300 text-slate-700 hover:border-deco-pink"
+                        }`}
+                      >
+                        {num}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Custom Number Input */}
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="text-slate-500 font-medium">
+                      O escribe otro número:
+                    </span>
+                    <input
+                      type="text"
+                      maxLength={3}
+                      placeholder="Ej. 7 o 60"
+                      value={customNumberInput}
+                      onChange={(e) => setCustomNumberInput(e.target.value)}
+                      className="w-24 px-3 py-1.5 border border-slate-300 rounded-lg text-center font-bold outline-none focus:border-deco-pink bg-white"
+                    />
+                  </div>
+                </div>
+              )}
+
               {/* Customization 2: Color Palette */}
               <div className="mb-5 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
                 <label className="block text-xs font-extrabold text-slate-800 mb-2">
-                  2. Elige el Color (la foto cambia al seleccionarlo):
+                  {colorStepNumber}. Elige el Color
+                  {hasPaletteImages ? " (la foto cambia al seleccionarlo)" : ""}:
                 </label>
                 <div className="space-y-2">
                   {palettes.map((palette) => {
@@ -261,7 +316,7 @@ const ProductDetailContent: React.FC<{
               {/* Customization 3: Dedication Card */}
               <div className="mb-6 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
                 <label className="block text-xs font-extrabold text-slate-800 mb-1">
-                  3. Tarjeta con Dedicatoria Impresa (Gratis):
+                  {cardStepNumber}. Tarjeta con Dedicatoria Impresa (Gratis):
                 </label>
                 <p className="text-[11px] text-slate-500 mb-2">
                   Se imprimirá en tarjeta caligráfica colocada en el centro del

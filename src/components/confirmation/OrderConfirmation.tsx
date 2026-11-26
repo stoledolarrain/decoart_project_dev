@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { WHATSAPP_DISPLAY } from '../../data/contact';
+import { getPaletteImage } from '../../utils/productImage';
 import confetti from 'canvas-confetti';
 
 export const OrderConfirmation: React.FC = () => {
@@ -136,14 +137,19 @@ export const OrderConfirmation: React.FC = () => {
 
             <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
               {lastOrder.items.map((item) => (
-                <div key={item.id} className="flex justify-between items-start text-xs border-b border-slate-100 pb-1.5">
+                <div key={item.id} className="flex items-center justify-between gap-2.5 text-xs border-b border-slate-100 pb-1.5">
+                  <img
+                    src={getPaletteImage(item.product, item.customization.selectedPalette, item.customization.selectedPaletteId)}
+                    alt={item.product.name}
+                    className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-slate-200"
+                  />
                   <div className="flex-1 min-w-0 pr-2">
                     <div className="font-bold text-slate-800 truncate">{item.product.name}</div>
                     <div className="text-[10px] text-slate-500">
                       Cant: {item.quantity} • {item.customization.selectedNumber ? `#${item.customization.selectedNumber}` : ''} {item.customization.selectedPalette}
                     </div>
                   </div>
-                  <div className="font-extrabold text-slate-900">
+                  <div className="font-extrabold text-slate-900 flex-shrink-0">
                     Bs. {item.product.price * item.quantity}
                   </div>
                 </div>

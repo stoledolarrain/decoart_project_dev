@@ -35,6 +35,7 @@ export interface Product {
 export interface CustomizationSelection {
   selectedNumber?: string;
   selectedPalette?: string;
+  selectedPaletteId?: string;
   cardMessage?: string;
   recipientName?: string;
 }

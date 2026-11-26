@@ -112,7 +112,7 @@ export const CartDrawer: React.FC = () => {
                       className="border border-slate-200 rounded-xl p-3 flex gap-3 hover:border-pink-200 transition-colors bg-white shadow-sm"
                     >
                       <img 
-                        src={getPaletteImage(item.product, item.customization.selectedPalette)} 
+                        src={getPaletteImage(item.product, item.customization.selectedPalette, item.customization.selectedPaletteId)} 
                         alt={item.product.name} 
                         className="w-20 h-20 rounded-lg object-cover flex-shrink-0 border border-slate-100"
                       />

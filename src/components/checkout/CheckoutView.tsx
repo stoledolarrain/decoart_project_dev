@@ -525,7 +525,7 @@ export const CheckoutView: React.FC = () => {
                     className="flex gap-2.5 text-xs py-1 border-b border-slate-50 last:border-none"
                   >
                     <img
-                      src={getPaletteImage(item.product, item.customization.selectedPalette)}
+                      src={getPaletteImage(item.product, item.customization.selectedPalette, item.customization.selectedPaletteId)}
                       alt={item.product.name}
                       className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
                     />

@@ -13,16 +13,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [activePaletteId, setActivePaletteId] = useState(palettes[0]?.id);
   const activePalette = palettes.find((p) => p.id === activePaletteId) ?? palettes[0];
 
-  // Fotos a mostrar: una por paleta (si las tiene); si no, la imagen principal del producto.
+  // Fotos a mostrar: una por paleta (si las tiene); si una paleta no tiene foto, cae a product.image.
   const paletteImages = palettes.filter((p) => p.image);
   const hasPaletteImages = paletteImages.length > 0;
-  const activeImage = activePalette?.image ?? product.image;
+  const activeUsesFallback = !activePalette?.image;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
     addToCart(product, 1, {
       selectedNumber: product.options.allowsNumberFoil ? product.options.defaultNumbers || '18' : undefined,
       selectedPalette: activePalette?.name,
+      selectedPaletteId: activePalette?.id,
     });
   };
 
@@ -41,17 +42,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="relative aspect-square overflow-hidden bg-slate-100">
         <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-500">
           {hasPaletteImages ? (
-            paletteImages.map((pal, idx) => (
+            <>
               <img
-                key={pal.id}
-                src={pal.image}
-                alt={`${product.name} - ${pal.name}`}
+                src={product.image}
+                alt={product.name}
                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-                  pal.image === activeImage ? 'opacity-100' : 'opacity-0'
+                  activeUsesFallback ? 'opacity-100' : 'opacity-0'
                 }`}
-                loading={idx === 0 ? 'eager' : 'lazy'}
+                loading="lazy"
               />
-            ))
+              {paletteImages.map((pal, idx) => (
+                <img
+                  key={pal.id}
+                  src={pal.image}
+                  alt={`${product.name} - ${pal.name}`}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                    pal.id === activePalette?.id ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  loading={idx === 0 ? 'eager' : 'lazy'}
+                />
+              ))}
+            </>
           ) : (
             <img
               src={product.image}
